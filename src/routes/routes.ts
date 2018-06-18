@@ -6,15 +6,17 @@ import logger from '../logger';
 const routes = new Router();
 
 routes
+  .use('*', async (ctx, next) => {
+    logger.info(`${ctx.method} ${ctx.request.url} ${JSON.stringify(ctx.request.body)}`);
+    return next();
+  })
+
   .get('/', async (ctx) => {
-    logger.info('GET /');
-    const { id } = ctx.params;
     const { rows } = await db.query('SELECT * from cars', []);
     ctx.body = rows;
   })
 
   .post('/create', async (ctx) => {
-    logger.info('POST /create');
     const name = ctx.request.body.name;
 
     if (name) {
