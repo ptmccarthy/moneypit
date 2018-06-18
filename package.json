@@ -5,15 +5,17 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node server.ts",
+    "start": "ts-node src/server.ts",
     "dev": "PGHOST='localhost' PGUSER=$USER PGDATABASE=test PGPASSWORD=password PGPORT=5432 concurrently \"tsc -w\" \"nodemon dist/server.js\""
   },
   "author": "Patrick McCarthy",
   "license": "ISC",
   "dependencies": {
     "@types/koa": "^2.0.46",
+    "@types/koa-bodyparser": "^4.2.0",
     "@types/koa-router": "^7.0.28",
     "koa": "^2.5.1",
+    "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
     "pg": "^7.4.3",
     "ts-node": "^6.1.1",
