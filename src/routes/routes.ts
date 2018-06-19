@@ -1,9 +1,10 @@
 import * as Router from 'koa-router';
-
-import { db } from '../db/db';
 import logger from '../logger';
 
+import { Car } from '../entity/car';
+
 const routes = new Router();
+const car = new Car();
 
 routes
   .use('*', async (ctx, next) => {
@@ -12,15 +13,18 @@ routes
   })
 
   .get('/', async (ctx) => {
-    const { rows } = await db.query('SELECT * from cars', []);
-    ctx.body = rows;
+    const allCars = await Car.find();
+    ctx.body = allCars;
   })
 
   .post('/create', async (ctx) => {
     const name = ctx.request.body.name;
+    const newCar = new Car();
+
+    newCar.name = name;
 
     if (name) {
-      const res = await db.query('INSERT INTO cars VALUES ($1)', [name]);
+      const res = await newCar.save();
       ctx.status = 200;
     } else {
       ctx.status = 400;
