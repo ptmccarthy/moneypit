@@ -18,16 +18,17 @@ routes
   })
 
   .post('/create', async (ctx) => {
-    const name = ctx.request.body.name;
-    const newCar = new Car();
+    const { ...params } = ctx.request.body;
 
-    newCar.name = name;
+    let newCar = new Car();
 
-    if (name) {
-      const res = await newCar.save();
+    newCar = Object.assign(newCar, params);
+
+    try {
+      await newCar.save();
       ctx.status = 200;
-    } else {
-      ctx.status = 400;
+    } catch(e) {
+      ctx.body = e;
     }
   })
 

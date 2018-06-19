@@ -9,4 +9,15 @@ export class Car extends BaseEntity {
   @Column()
   name: string;
 
+  @Column()
+  brand: string;
+
+  @Column()
+  model: string;
+
+  @Column()
+  year: number;
+
+  @Column()
+  odometer: number;
 }
