@@ -5,6 +5,7 @@
   ],
   "jsRules": {},
   "rules": {
+    "ordered-imports": false,
     "quotemark": [true, "single"],
     "trailing-comma": [true, { "multiline": "always", "singleline": "never" }]
   },

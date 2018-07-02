@@ -27,9 +27,9 @@ routes
     try {
       await newCar.save();
       ctx.status = 200;
-    } catch(e) {
+    } catch (e) {
       ctx.body = e;
     }
-  })
+  });
 
 export default routes;
