@@ -4,20 +4,20 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export class Car extends BaseEntity {
 
   @PrimaryGeneratedColumn()
-  id: number;
+  public id: number;
 
   @Column()
-  name: string;
+  public name: string;
 
   @Column()
-  brand: string;
+  public brand: string;
 
   @Column()
-  model: string;
+  public model: string;
 
   @Column()
-  year: number;
+  public year: number;
 
   @Column()
-  odometer: number;
+  public odometer: number;
 }
