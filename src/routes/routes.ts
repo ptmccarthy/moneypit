@@ -1,9 +1,11 @@
 import * as Router from 'koa-router';
 import * as passport from 'koa-passport';
+import { getRepository } from 'typeorm';
 
 import logger from '../logger';
 
 import { Car } from '../entity/car';
+import { User } from '../entity/user';
 
 const routes = new Router();
 const car = new Car();
@@ -35,17 +37,42 @@ routes
       } else {
         ctx.login(user);
         logger.info(`Login success for user: ${user.username}`);
-        ctx.redirect('/api/test');
+        ctx.redirect('/api/users');
       }
     })(ctx, next)
   )
 
-  .get('/api/test', async (ctx) => {
-    const allCars = await Car.find();
-    ctx.body = allCars;
+  .get('/register', async (ctx) => {
+    ctx.body = 'register';
   })
 
-  .post('/create', async (ctx) => {
+  .post('/register', async (ctx, next) => {
+    const userRepo = getRepository(User);
+    let userEntity = new User();
+
+    Object.assign(userEntity, ctx.request.body);
+    userEntity = await userRepo.save(userEntity);
+
+    return passport.authenticate('local', (err, user, info, status) => {
+      if (!user) {
+        logger.error(`${status} - ${info}`);
+      } else {
+        ctx.login(user);
+        logger.info(`Login success for user: ${user.username}`);
+        ctx.redirect('/api/users');
+      }
+    })(ctx, next);
+  })
+
+  .get('/api/users', async (ctx) => {
+    ctx.body = await User.find();
+  })
+
+  .get('/api/cars', async (ctx) => {
+    ctx.body = await Car.find();
+  })
+
+  .post('/api/car/create', async (ctx) => {
     const { ...params } = ctx.request.body;
 
     let newCar = new Car();
