@@ -19,8 +19,7 @@ routes
   .use('/api/*', async (ctx, next) => {
     if (ctx.isUnauthenticated()) {
       logger.info('is not auth');
-      ctx.redirect('/login');
-      return;
+      ctx.redirect('/');
     }
 
     return next();
@@ -31,16 +30,20 @@ routes
   })
 
   .post('/login', async (ctx, next) =>
-    passport.authenticate('local', { failureRedirect: '/' }, (err, user, info, status) => {
-      if (!user) {
-        logger.error(`${status} - ${info}`);
-      } else {
-        ctx.login(user);
-        logger.info(`Login success for user: ${user.username}`);
-        ctx.redirect('/api/users');
-      }
+    passport.authenticate('local', {
+      successRedirect: '/api/users',
+      failureRedirect: '/'
     })(ctx, next)
   )
+
+  .get('/logout', async (ctx, next) => {
+    if (ctx.isAuthenticated()) {
+      ctx.logout();
+      ctx.session = null;
+    }
+
+    ctx.redirect('/');
+  })
 
   .get('/register', async (ctx) => {
     ctx.body = 'register';
@@ -53,14 +56,9 @@ routes
     Object.assign(userEntity, ctx.request.body);
     userEntity = await userRepo.save(userEntity);
 
-    return passport.authenticate('local', (err, user, info, status) => {
-      if (!user) {
-        logger.error(`${status} - ${info}`);
-      } else {
-        ctx.login(user);
-        logger.info(`Login success for user: ${user.username}`);
-        ctx.redirect('/api/users');
-      }
+    return passport.authenticate('local', {
+      successRedirect: '/api/users',
+      failureRedirect: '/'
     })(ctx, next);
   })
 
