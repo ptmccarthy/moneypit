@@ -9,7 +9,7 @@ export class User extends BaseEntity {
   @Column()
   public username: string;
 
-  @Column()
+  @Column({ select: false })
   public password: string;
 
   @Column()

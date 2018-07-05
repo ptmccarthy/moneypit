@@ -14,7 +14,11 @@ passport.use('local', new Strategy({
   passwordField: 'password',
 }, async (username, password, done) => {
   try {
-    const dbUser = await User.getRepository().findOne({ username });
+    const dbUser = await User.getRepository()
+      .createQueryBuilder('user')
+      .where('user.username = :username', { username })
+      .addSelect('user.password') // get hidden column
+      .getOne();
 
     if (dbUser && comparePassword(password, dbUser.password)) {
       return done(null, dbUser);
