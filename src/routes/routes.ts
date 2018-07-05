@@ -1,4 +1,5 @@
 import * as Router from 'koa-router';
+import * as bcrypt from 'bcryptjs';
 import * as passport from 'koa-passport';
 import { getRepository } from 'typeorm';
 
@@ -50,10 +51,18 @@ routes
   })
 
   .post('/register', async (ctx, next) => {
+    const { username, password, firstName, lastName } = ctx.request.body;
+
+    const salt = await bcrypt.genSalt();
+    const hash = await bcrypt.hash(password, salt);
     const userRepo = getRepository(User);
     let userEntity = new User();
 
-    Object.assign(userEntity, ctx.request.body);
+    userEntity.username = username;
+    userEntity.password = hash;
+    userEntity.firstName = firstName;
+    userEntity.lastName = lastName;
+
     userEntity = await userRepo.save(userEntity);
 
     return passport.authenticate('local', {
